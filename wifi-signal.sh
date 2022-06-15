@@ -44,6 +44,7 @@ throw_error () {
 [ -z ${IFACE+x} ] && throw_error 'Please specify interface'
 
 signal=$(iwconfig $IFACE | grep 'Signal level' | sed 's/.\+Signal level=\(-\?[0-9]\+\) dBm/\1/')
+signal=$(( $signal > $MAXIMUM_SIGNAL ? $MAXIMUM_SIGNAL : $signal))
 
 if [ $signal -ge $USABLE_SIGNAL ]; then
   echo $((50+(-$USABLE_SIGNAL+$signal)*50/(-$USABLE_SIGNAL+$MAXIMUM_SIGNAL)))
