@@ -3,8 +3,8 @@
 show_help () {
   echo "Usage: wifi-signal -i <iface>
   Options:
-    -i <iface>,          Interface
-    --help               Show help"
+    -i <iface>, Interface
+    --help      Show help"
 }
 
 MINIMUM_SIGNAL=-90
