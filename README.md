@@ -18,6 +18,7 @@ $ ln -s $PWD/wifi-signal.sh /usr/local/bin/wifi-signal
 ```
 wifi-signal -i <iface>
   Options:
-    -i <iface>, Interface
-    --help      Show help
+    -i <iface>,     Interface
+    -p, --percent,  Show signal value in percent
+    --help          Show help
 ````
