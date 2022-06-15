@@ -3,21 +3,28 @@
 show_help () {
   echo "Usage: wifi-signal -i <iface>
   Options:
-    -i <iface>, Interface
-    --help      Show help"
+    -i <iface>,     Interface
+    -p, --percent,  Show signal value in percent.
+    --help          Show help"
 }
 
-MIN_SIGNAL=-90
-USABLE_SIGNAL=-67
-MAX_SIGNAL=-30
+PERCENT_MIN_SIGNAL=-90
+PERCENT_MIDDLE_SIGNAL=-67
+PERCENT_MAX_SIGNAL=-30
 
-options=$(getopt -o i: -l help -- "$@")
+PERCENT=0
+
+options=$(getopt -o i:p -l help,percent -- "$@")
 eval set -- "$options"
 while true; do
   case "$1" in
     -i)
       IFACE=$2
       shift 2
+      ;;
+    -p|--percent)
+      PERCENT=1
+      shift 1
       ;;
     --help)
       show_help
@@ -43,12 +50,14 @@ throw_error () {
 
 [ -z ${IFACE+x} ] && throw_error 'Please specify interface'
 
-signal=$(iwconfig $IFACE | grep 'Signal level' | sed 's/.\+Signal level=\(-\?[0-9]\+\) dBm/\1/')
-signal=$(( $signal > $MAX_SIGNAL ? $MAX_SIGNAL : $signal))
+signal=$(iwconfig $IFACE | grep 'Signal level' | sed 's/.\+Signal level=\(-\?[0-9]\+\).\+/\1/')
 
-if [ $signal -ge $USABLE_SIGNAL ]; then
-  echo $((50+(-$USABLE_SIGNAL+$signal)*50/(-$USABLE_SIGNAL+$MAX_SIGNAL)))
+[ "$PERCENT" -ne "1" ] && echo "$signal dBm" && exit 0
+
+signal=$(($signal > $PERCENT_MAX_SIGNAL ? $PERCENT_MAX_SIGNAL : $signal))
+if [ $signal -ge $PERCENT_MIDDLE_SIGNAL ]; then
+  echo $((50+(-$PERCENT_MIDDLE_SIGNAL+$signal)*50/(-$PERCENT_MIDDLE_SIGNAL+$PERCENT_MAX_SIGNAL)))
 else
-  echo $((50-($USABLE_SIGNAL-$signal)*50/(-$MIN_SIGNAL+$USABLE_SIGNAL)))
+  echo $((50-($PERCENT_MIDDLE_SIGNAL-$signal)*50/(-$PERCENT_MIDDLE_SIGNAL+$PERCENT_MIN_SIGNAL)))
 fi
 
