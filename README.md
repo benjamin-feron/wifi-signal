@@ -1,5 +1,7 @@
 # wifi-signal
 
+A shell script to get wifi signal power on a scale from 0 to 100
+
 ## Repository
 
 [https://github.com/benjamin-feron/wifi-signal](https://github.com/benjamin-feron/wifi-signal)
