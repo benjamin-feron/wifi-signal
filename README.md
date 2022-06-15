@@ -15,7 +15,9 @@ $ ln -s $PWD/wifi-signal.sh /usr/local/bin/wifi-signal
 
 ## Usage
 
+```
 wifi-signal -i <iface>
   Options:
     -i <iface>, Interface
     --help      Show help
+````
