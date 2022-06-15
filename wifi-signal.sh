@@ -7,9 +7,9 @@ show_help () {
     --help      Show help"
 }
 
-MINIMUM_SIGNAL=-90
+MIN_SIGNAL=-90
 USABLE_SIGNAL=-67
-MAXIMUM_SIGNAL=-30
+MAX_SIGNAL=-30
 
 options=$(getopt -o i: -l help -- "$@")
 eval set -- "$options"
@@ -44,11 +44,11 @@ throw_error () {
 [ -z ${IFACE+x} ] && throw_error 'Please specify interface'
 
 signal=$(iwconfig $IFACE | grep 'Signal level' | sed 's/.\+Signal level=\(-\?[0-9]\+\) dBm/\1/')
-signal=$(( $signal > $MAXIMUM_SIGNAL ? $MAXIMUM_SIGNAL : $signal))
+signal=$(( $signal > $MAX_SIGNAL ? $MAX_SIGNAL : $signal))
 
 if [ $signal -ge $USABLE_SIGNAL ]; then
-  echo $((50+(-$USABLE_SIGNAL+$signal)*50/(-$USABLE_SIGNAL+$MAXIMUM_SIGNAL)))
+  echo $((50+(-$USABLE_SIGNAL+$signal)*50/(-$USABLE_SIGNAL+$MAX_SIGNAL)))
 else
-  echo $((50-($USABLE_SIGNAL-$signal)*50/(-$MINIMUM_SIGNAL+$USABLE_SIGNAL)))
+  echo $((50-($USABLE_SIGNAL-$signal)*50/(-$MIN_SIGNAL+$USABLE_SIGNAL)))
 fi
 
