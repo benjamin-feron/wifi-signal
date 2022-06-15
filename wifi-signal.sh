@@ -4,7 +4,7 @@ show_help () {
   echo "Usage: wifi-signal -i <iface>
   Options:
     -i <iface>,     Interface
-    -p, --percent,  Show signal value in percent.
+    -p, --percent,  Show signal value in percent
     --help          Show help"
 }
 
