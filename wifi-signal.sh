@@ -41,7 +41,7 @@ throw_error () {
   MSG=$1
   EXIT=$2
   STD_MSG="Command stopped"
-  printf "\033[0;31m$MSG\033[0m\n"
+  printf "\033[0;31m%s\033[0m\n" "$MSG"
   echo "$STD_MSG"
   if $EXIT ; then
     exit 1
@@ -50,14 +50,14 @@ throw_error () {
 
 [ -z ${IFACE+x} ] && throw_error 'Please specify interface'
 
-signal=$(iwconfig $IFACE | grep 'Signal level' | sed 's/.\+Signal level=\(-\?[0-9]\+\).\+/\1/')
+signal=$(iwconfig "$IFACE" | grep 'Signal level' | sed 's/.\+Signal level=\(-\?[0-9]\+\).\+/\1/')
 
-[ "$PERCENT" -ne "1" ] && echo "$signal dBm" && exit 0
+(( PERCENT != 1 )) && echo "$signal dBm" && exit 0
 
-signal=$(($signal > $PERCENT_MAX_SIGNAL ? $PERCENT_MAX_SIGNAL : $signal))
-if [ $signal -ge $PERCENT_MIDDLE_SIGNAL ]; then
-  echo $((50+(-$PERCENT_MIDDLE_SIGNAL+$signal)*50/(-$PERCENT_MIDDLE_SIGNAL+$PERCENT_MAX_SIGNAL)))
+signal=$((signal > PERCENT_MAX_SIGNAL ? PERCENT_MAX_SIGNAL : signal))
+if (( signal >= PERCENT_MIDDLE_SIGNAL )); then
+  echo $((50+(-PERCENT_MIDDLE_SIGNAL+signal)*50/(-PERCENT_MIDDLE_SIGNAL+PERCENT_MAX_SIGNAL)))
 else
-  echo $((50-($PERCENT_MIDDLE_SIGNAL-$signal)*50/(-$PERCENT_MIDDLE_SIGNAL+$PERCENT_MIN_SIGNAL)))
+  echo $((50-(PERCENT_MIDDLE_SIGNAL-signal)*50/(-PERCENT_MIDDLE_SIGNAL+PERCENT_MIN_SIGNAL)))
 fi
 
